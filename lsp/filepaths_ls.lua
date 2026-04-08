@@ -117,13 +117,13 @@ local function resolve_scan_dir(document_uri, dir_part)
         return nil
     end
 
-    local buf_dir = vim.fs.dirname(file)
-    if not buf_dir or buf_dir == '' then
+    local base_dir = vim.uv.cwd() or vim.fs.dirname(file)
+    if not base_dir or base_dir == '' then
         return nil
     end
 
     if dir_part == '' then
-        return buf_dir
+        return base_dir
     end
 
     local env_name, env_suffix = dir_part:match('^%$([%a_][%w_]*)/(.*)$')
@@ -142,7 +142,7 @@ local function resolve_scan_dir(document_uri, dir_part)
         return vim.fs.normalize(dir_part)
     end
 
-    return vim.fs.normalize(vim.fs.joinpath(buf_dir, dir_part))
+    return vim.fs.normalize(vim.fs.joinpath(base_dir, dir_part))
 end
 
 ---@param path string
